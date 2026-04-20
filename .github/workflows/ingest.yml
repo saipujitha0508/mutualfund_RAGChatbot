@@ -72,14 +72,9 @@ jobs:
       
       - name: Upload structured data artifacts
         uses: actions/upload-artifact@v4
+        if: hashFiles('data/structured/**/*') != ''
+        continue-on-error: true
         with:
           name: structured-data
           path: data/structured/
           retention-days: 30
-      
-      - name: Upload ingest manifest
-        uses: actions/upload-artifact@v4
-        with:
-          name: ingest-manifest
-          path: data/structured/*/manifest.json
-          retention-days: 90
