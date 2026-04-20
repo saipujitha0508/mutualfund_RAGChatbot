@@ -140,7 +140,7 @@ export default function Home() {
         {messages.length === 0 && (
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-white mb-3">
-              Welcome to Navi Mutual Fund FAQ Assistant
+              Welcome to FAQ Chatbot
             </h2>
             <p className="text-gray-400 mb-8">
               Ask factual questions about Navi Mutual Fund schemes. I can help with expense ratios, SIP amounts, exit loads, and more.

@@ -30,7 +30,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
-    title="Navi Mutual Fund FAQ Assistant API",
+    title="FAQ Chatbot API",
     description="Facts-only RAG-based FAQ assistant for Navi Mutual Fund schemes",
     version="1.0.0"
 )

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Navi Mutual Fund FAQ Assistant',
+  title: 'FAQ Chatbot',
   description: 'Facts-only RAG-based FAQ assistant for Navi Mutual Fund schemes',
 }
 
