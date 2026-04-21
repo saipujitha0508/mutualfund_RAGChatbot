@@ -298,9 +298,9 @@ async def send_message(thread_id: str, request: SendMessageRequest):
 
 
 @app.delete("/threads/{thread_id}")
-asynensure_components_initialized()
-    c def delete_thread(thread_id: str):
+async def delete_thread(thread_id: str):
     """Delete a thread."""
+    ensure_components_initialized()
     if not thread_manager:
         raise HTTPException(status_code=503, detail="Thread manager not available")
     
