@@ -1,0 +1,85 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+venv/
+env/
+ENV/
+.venv
+
+# Data directories
+data/raw/
+data/normalized/
+data/chunked/
+data/embedded/
+data/chroma/
+data/structured/
+data/threads.db
+*.db
+*.sqlite
+
+# Logs
+logs/
+*.log
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node/Next.js (exclude frontend from backend build)
+web/node_modules/
+web/.next/
+web/out/
+web/build/
+web/.env.local
+web/.env.development.local
+web/.env.test.local
+web/.env.production.local
+web/npm-debug.log*
+web/yarn-debug.log*
+web/yarn-error.log*
+
+# Git
+.git/
+.github/
+
+# Documentation
+docs/
+
+# Test files
+check_mapping.py
+remove_duplicates.py
+setup_daily_scheduler.ps1
+
+# Temporary files
+*.tmp
+*.temp
