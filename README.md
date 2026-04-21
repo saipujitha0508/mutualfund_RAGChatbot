@@ -1,3 +1,13 @@
+---
+title: FAQ Chatbot API
+emoji: 🤖
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+pinned: false
+license: mit
+---
+
 # RAG FAQ Chatbot
 
 A facts-only RAG-based FAQ assistant built for INDmoney using Navi as the Asset Management Company (AMC). This system answers objective, verifiable queries about mutual funds by retrieving information exclusively from official public sources.
