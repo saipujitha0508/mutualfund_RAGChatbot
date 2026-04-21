@@ -31,6 +31,9 @@ data/normalized/
 data/chunked/
 data/embedded/
 data/chroma/
+data/structured/
+data/index_manifest.json
+data/sources.csv
 data/threads.db
 *.db
 *.sqlite
