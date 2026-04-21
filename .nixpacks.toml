@@ -1,0 +1,16 @@
+[phases.setup]
+nixPkgs = ["python311"]
+
+[phases.build]
+cmds = ["pip install --no-cache-dir -r requirements-deploy.txt"]
+
+[phases.start]
+cmd = "python -m runtime.phase_9_api"
+
+[build.env]
+PYTHON_VERSION = "3.11"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
