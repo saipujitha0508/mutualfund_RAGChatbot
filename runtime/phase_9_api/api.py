@@ -44,13 +44,54 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
-# Initialize components
+# Initialize components (lazy loading for memory efficiency)
 retriever = None
 generator = None
 safety = None
 thread_manager = None
 
 DEBUG_MODE = os.getenv("RUNTIME_API_DEBUG", "0") == "1"
+_components_initialized = False
+
+
+def ensure_components_initialized():
+    """Initialize components on first use (lazy loading for Render 512MB limit)."""
+    global retriever, generator, safety, thread_manager, _components_initialized
+    
+    if _components_initialized:
+        return
+    
+    logger.info("Lazy loading components...")
+    
+    try:
+        retriever = VectorRetriever()
+        logger.info("Retriever initialized (Local Chroma)")
+    except Exception as e:
+        logger.error(f"Failed to initialize retriever: {e}")
+    
+    if GENERATION_ENABLED:
+        try:
+            generator = AnswerGenerator()
+            logger.info("Generator initialized")
+        except Exception as e:
+            logger.error(f"Failed to initialize generator: {e}")
+    else:
+        logger.info("Generator initialization skipped (GROQ_API_KEY not set)")
+    
+    try:
+        safety = SafetyLayer()
+        logger.info("Safety layer initialized")
+    except Exception as e:
+        logger.error(f"Failed to initialize safety layer: {e}")
+    
+    try:
+        thread_manager = ThreadManager()
+        logger.info("Thread manager initialized")
+    except Exception as e:
+        logger.error(f"Failed to initialize thread manager: {e}")
+    
+    _components_initialized = True
+    logger.info("Components lazy loaded successfully")
 
 # Check for required environment variables
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
@@ -106,39 +147,8 @@ class ChatResponse(BaseModel):
 
 @app.on_event("startup")
 async def startup_event():
-    """Initialize components on startup."""
-    global retriever, generator, safety, thread_manager
-    
-    logger.info("Initializing API components...")
-    
-    try:
-        retriever = VectorRetriever()
-        logger.info("Retriever initialized (Local Chroma)")
-    except Exception as e:
-        logger.error(f"Failed to initialize retriever: {e}")
-    
-    if GENERATION_ENABLED:
-        try:
-            generator = AnswerGenerator()
-            logger.info("Generator initialized")
-        except Exception as e:
-            logger.error(f"Failed to initialize generator: {e}")
-    else:
-        logger.info("Generator initialization skipped (GROQ_API_KEY not set)")
-    
-    try:
-        safety = SafetyLayer()
-        logger.info("Safety layer initialized")
-    except Exception as e:
-        logger.error(f"Failed to initialize safety layer: {e}")
-    
-    try:
-        thread_manager = ThreadManager()
-        logger.info("Thread manager initialized")
-    except Exception as e:
-        logger.error(f"Failed to initialize thread manager: {e}")
-    
-    logger.info("API initialization complete")
+    """Initialize lightweight components on startup (heavy components loaded lazily)."""
+    logger.info("API startup complete (heavy components will be lazy loaded on first request)")
 
 
 @app.get("/")
@@ -171,6 +181,7 @@ async def health():
 @app.post("/threads", response_model=ThreadResponse)
 async def create_thread(request: Optional[CreateThreadRequest] = None):
     """Create a new chat thread."""
+    ensure_components_initialized()
     if not thread_manager:
         raise HTTPException(status_code=503, detail="Thread manager not available")
     
@@ -184,6 +195,7 @@ async def create_thread(request: Optional[CreateThreadRequest] = None):
 @app.get("/threads")
 async def list_threads(limit: int = 50):
     """List all threads."""
+    ensure_components_initialized()
     if not thread_manager:
         raise HTTPException(status_code=503, detail="Thread manager not available")
     
@@ -193,6 +205,7 @@ async def list_threads(limit: int = 50):
 
 @app.get("/threads/{thread_id}/messages")
 async def get_thread_messages(thread_id: str, limit: Optional[int] = None):
+    ensure_components_initialized()
     """Get messages from a thread."""
     if not thread_manager:
         raise HTTPException(status_code=503, detail="Thread manager not available")
@@ -206,6 +219,7 @@ async def get_thread_messages(thread_id: str, limit: Optional[int] = None):
 
 @app.post("/threads/{thread_id}/messages", response_model=ChatResponse)
 async def send_message(thread_id: str, request: SendMessageRequest):
+    ensure_components_initialized()
     """Send a message to a thread and get an AI response."""
     if not all([retriever, generator, safety, thread_manager]):
         raise HTTPException(status_code=503, detail="Service components not fully initialized")
@@ -284,7 +298,8 @@ async def send_message(thread_id: str, request: SendMessageRequest):
 
 
 @app.delete("/threads/{thread_id}")
-async def delete_thread(thread_id: str):
+asynensure_components_initialized()
+    c def delete_thread(thread_id: str):
     """Delete a thread."""
     if not thread_manager:
         raise HTTPException(status_code=503, detail="Thread manager not available")
